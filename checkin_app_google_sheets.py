@@ -35,7 +35,7 @@ body {
 st.markdown(background_image, unsafe_allow_html=True)
 
 # PNANY Logo
-st.image("https://drive.google.com/uc?export=view&id=1ooPZNJ6kaDmH8tO9ld8EpserBV3gRA3t", width=180)  # Replace with actual PNANY logo link
+st.image("https://i.imgur.com/QjLFALD.png", width=180)  # Replace with actual PNANY logo link
 
 # ----------------- SHEET SETUP -----------------
 sheet_name = "PNANY 2025 Check-In Log"
@@ -104,8 +104,10 @@ elif selection == "Attendee Check-In":
         if registration_list.empty:
             st.warning("⚠️ Please upload a registration list to begin.")
         else:
-            attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
-            if attendee_name:
+            with st.form("pre_registered_form"):
+        attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
+        submitted = st.form_submit_button("✅ Check In")
+            if attendee_name and "submitted" in locals() and submitted:
                 attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
                 email = attendee["Email"]
                 existing_cred = attendee["Credentials"]
