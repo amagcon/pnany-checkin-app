@@ -181,10 +181,15 @@ if st.session_state.view == "attendee":
 
     with tab3:
         st.header("📄 Checked-In Attendees Log")
+    
+        total_checked_in = len(checkin_log)
+        st.subheader(f"✅ Total Checked-In: {total_checked_in}")
+    
         if not checkin_log.empty:
             st.dataframe(checkin_log)
         else:
             st.info("ℹ️ No attendees have checked in yet.")
+
 
     with tab4:
         st.header("🌟 Attendees Interested in PNANY Membership")
