@@ -108,7 +108,7 @@ if st.session_state.view == "attendee":
                 credentials = existing_cred
                 st.markdown(f"**Pre-registered credentials:** `{credentials}`")
 
-        submitted = st.form_submit_button("✅ Check In")** `{credentials}`")
+        submitted = st.form_submit_button("✅ Check In")
 
             
 if submitted:
