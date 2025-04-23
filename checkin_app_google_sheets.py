@@ -134,8 +134,6 @@ if submitted:
             set_with_dataframe(worksheet, checkin_log)
             st.success(f"🎉 {attendee_name} has been checked in.")
 
-                    st.success(f"🎉 {attendee_name} has been checked in.")
-
     with tab2:
         st.header("📝 Manual Attendee Check-In")
         name_input = st.text_input("Full Name")
