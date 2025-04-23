@@ -35,7 +35,7 @@ body {
 st.markdown(background_image, unsafe_allow_html=True)
 
 # PNANY Logo
-st.image("https://i.imgur.com/QjLFALD.png", width=180)  # Replace with actual PNANY logo link
+st.image("https://drive.google.com/uc?export=view&id=1ooPZNJ6kaDmH8tO9ld8EpserBV3gRA3t", width=180)  # Replace with actual PNANY logo link
 
 # ----------------- SHEET SETUP -----------------
 sheet_name = "PNANY 2025 Check-In Log"
@@ -63,22 +63,19 @@ else:
 # ----------------- LANDING PAGE -----------------
 st.markdown("<h1 style='text-align: center; color: navy;'>👋 Welcome to PNANY 2025 Spring Educational Conference</h1>", unsafe_allow_html=True)
 
+
 st.markdown("""
     <style>
     div.stButton > button {
-        display: block;
-        font-size: 32px !important;
-        padding: 1.5em 2em;
+        font-size: 28px !important;
+        padding: 1.2em 2em;
         border-radius: 12px;
         font-weight: bold;
-        width: 100%;
     }
     </style>
 """, unsafe_allow_html=True)
-
-
-
 col1, col2 = st.columns(2)
+
 with col1:
     attendee_clicked = st.button("🙋 Attendee Check-In", use_container_width=True)
 with col2:
