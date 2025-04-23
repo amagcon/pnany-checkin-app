@@ -78,7 +78,7 @@ st.markdown("""
 st.markdown("""
     <style>
     div.stButton > button {
-        font-size: 28px !important;
+        font-size: 40px !important;
         padding: 1.2em 2em;
         border-radius: 12px;
         font-weight: bold;
