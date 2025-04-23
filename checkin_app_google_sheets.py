@@ -113,8 +113,6 @@ if st.session_state.view == "attendee":
                 interested = ""
                 if membership_status == "No":
                     interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
-
-                affiliation = st.text_input("Workplace or Affiliation")
                 
                 submitted = st.form_submit_button("✅ Check In")
 
