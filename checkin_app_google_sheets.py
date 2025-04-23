@@ -65,15 +65,13 @@ with col2:
 if st.session_state.view is None:
     st.stop()
 
-# ATTENDEE VIEW
+# -------------------- ATTENDEE VIEW --------------------
 if st.session_state.view == "attendee":
     st.markdown("<h2 style='text-align: center; color: navy;'>👋 Welcome to PNANY 2025 Spring Educational Conference</h2>", unsafe_allow_html=True)
 
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "🧾 Pre-Registered -In",
-        "📝 Manual -In",
-        "📄 View -In Log",
-        "🌟 Interested in Membership"
+    tab1, tab2 = st.tabs([
+        "🧾 Pre-Registered Check-In",
+        "📝 Manual Check-In"
     ])
 
     registration_file = "registration_list.csv"
@@ -85,7 +83,7 @@ if st.session_state.view == "attendee":
         registration_list = pd.DataFrame(columns=["Name", "Email", "Credentials"])
 
     with tab1:
-        st.header("🧾 Pre-Registered Attendee -In")
+        st.header("🧾 Pre-Registered Attendee Check-In")
         if registration_list.empty:
             st.warning("⚠️ Please upload a registration list to begin.")
         else:
@@ -126,16 +124,11 @@ if st.session_state.view == "attendee":
                     if name_lower in log_names.values or email_lower in log_emails.values:
                         st.warning(f"🚫 {attendee_name} has already checked in.")
                     else:
-                        new_entry = pd.DataFrame([[
-                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                            attendee_name,
-                            email,
-                            credentials,
-                            "Preregistered",
-                            membership_status,
-                            interested if membership_status == "No" else "",
-                            ""
-                        ]], columns=log_columns)
+                        new_entry = pd.DataFrame([[datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                                   attendee_name, email, credentials, "Preregistered",
+                                                   membership_status,
+                                                   interested if membership_status == "No" else "",
+                                                   ""]], columns=log_columns)
                         checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
                         set_with_dataframe(worksheet, checkin_log)
                         st.success(f"🎉 {attendee_name} has been checked in.")
@@ -165,31 +158,50 @@ if st.session_state.view == "attendee":
                 if name_lower in log_names.values or email_lower in log_emails.values:
                     st.warning(f"🚫 {name_input} has already checked in.")
                 else:
-                    new_entry = pd.DataFrame([[
-                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        name_input,
-                        email_input,
-                        credentials_input,
-                        "Manual",
-                        membership_status,
-                        interested if membership_status == "No" else "",
-                        affiliation
-                    ]], columns=log_columns)
+                    new_entry = pd.DataFrame([[datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                                               name_input, email_input, credentials_input, "Manual",
+                                               membership_status,
+                                               interested if membership_status == "No" else "",
+                                               affiliation]], columns=log_columns)
                     checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
                     set_with_dataframe(worksheet, checkin_log)
                     st.success(f"✅ {name_input} has been manually checked in.")
 
+# -------------------- ORGANIZER VIEW --------------------
+elif st.session_state.view == "organizer":
+    st.markdown("<h2 style='text-align: center; color: navy;'>🛠 Organizer View</h2>", unsafe_allow_html=True)
+    tab3, tab4 = st.tabs(["📄 View Check-In Log", "🌟 Interested in Membership"])
+
     with tab3:
         st.header("📄 Checked-In Attendees Log")
-    
         total_checked_in = len(checkin_log)
         st.subheader(f"✅ Total Checked-In: {total_checked_in}")
-    
+
         if not checkin_log.empty:
             st.dataframe(checkin_log)
+
+            # Export as CSV
+            csv = checkin_log.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="⬇️ Download CSV",
+                data=csv,
+                file_name="PNANY_checkin_log.csv",
+                mime="text/csv"
+            )
+
+            # Export as Excel
+            excel_writer = pd.ExcelWriter("checkin_export.xlsx", engine="xlsxwriter")
+            checkin_log.to_excel(excel_writer, index=False, sheet_name="CheckIns")
+            excel_writer.close()
+            with open("checkin_export.xlsx", "rb") as f:
+                st.download_button(
+                    label="⬇️ Download Excel",
+                    data=f.read(),
+                    file_name="PNANY_checkin_log.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
         else:
             st.info("ℹ️ No attendees have checked in yet.")
-
 
     with tab4:
         st.header("🌟 Attendees Interested in PNANY Membership")
