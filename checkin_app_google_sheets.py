@@ -110,10 +110,6 @@ if st.session_state.view == "attendee":
 
         submitted = st.form_submit_button("✅ Check In")** `{credentials}`")
 
-submitted = st.form_submit_button("✅ Check In")
-
-
-
             
 if submitted:
     if missing_cred and not credentials.strip():
