@@ -107,8 +107,27 @@ if st.session_state.view == "attendee":
                     credentials = existing_cred
                     st.markdown(f"**Pre-registered credentials:** `{credentials}`")
 
-            submitted = st.form_submit_button("✅ Check In")
 
+
+with st.form("pre_registered_form"):
+    attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
+    credentials = ""
+    email = ""
+    missing_cred = False
+
+    if attendee_name:
+        attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
+        email = attendee["Email"]
+        existing_cred = attendee["Credentials"]
+
+        if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
+            credentials = st.text_input("✍️ Enter your credentials")
+            missing_cred = True
+        else:
+            credentials = existing_cred
+            st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+
+    submitted = st.form_submit_button("✅ Check In")
 
 
             
