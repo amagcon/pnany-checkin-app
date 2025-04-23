@@ -63,28 +63,19 @@ else:
 # ----------------- LANDING PAGE -----------------
 st.markdown("<h1 style='text-align: center; color: navy;'>👋 Welcome to PNANY 2025 Spring Educational Conference</h1>", unsafe_allow_html=True)
 
-# Add custom CSS to enlarge buttons
 st.markdown("""
     <style>
     div.stButton > button {
-        font-size: 24px !important;
-        padding: 1em 2em;
-        border-radius: 10px;
+        display: block;
+        font-size: 32px !important;
+        padding: 1.5em 2em;
+        border-radius: 12px;
+        font-weight: bold;
+        width: 100%;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Custom CSS to enlarge buttons
-st.markdown("""
-    <style>
-    div.stButton > button {
-        font-size: 40px !important;
-        padding: 1.2em 2em;
-        border-radius: 12px;
-        font-weight: bold;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 
 col1, col2 = st.columns(2)
