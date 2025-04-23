@@ -113,7 +113,7 @@ elif selection == "Attendee Check-In":
                     email = attendee["Email"]
                     existing_cred = attendee["Credentials"]
 
-                    if pd.isna(existing_cred) or existing_cred.strip() == "":
+                    if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
                         credentials = st.text_input("✍️ Enter your credentials")
                     else:
                         credentials = existing_cred
