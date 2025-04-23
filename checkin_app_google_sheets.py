@@ -108,6 +108,14 @@ if st.session_state.view == "attendee":
                         credentials = existing_cred
                         st.markdown(f"**Pre-registered credentials:** `{credentials}`")
         
+                membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
+
+                interested = ""
+                if membership_status == "No":
+                    interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
+
+                affiliation = st.text_input("Workplace or Affiliation")
+                
                 submitted = st.form_submit_button("✅ Check In")
 
             
@@ -128,8 +136,12 @@ if submitted:
                 attendee_name,
                 email,
                 credentials,
-                "Preregistered", "", "", ""
+                "Preregistered",
+                membership_status,
+                interested if membership_status == "No" else "",
+                affiliation
             ]], columns=log_columns)
+            
             checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
             set_with_dataframe(worksheet, checkin_log)
             st.success(f"🎉 {attendee_name} has been checked in.")
