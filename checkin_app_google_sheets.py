@@ -189,3 +189,13 @@ if st.session_state.view == "attendee":
     with tab4:
         st.header("🌟 Attendees Interested in PNANY Membership")
         if not checkin_log.empty:
+            interested_df = checkin_log[
+                (checkin_log["Membership Status"].str.lower() == "no") &
+                (checkin_log["Interested in Membership"].str.lower() == "yes")
+            ]
+            if not interested_df.empty:
+                st.dataframe(interested_df[["Timestamp", "Name", "Email", "Affiliation"]])
+            else:
+                st.info("No non-members have indicated interest in joining yet.")
+        else:
+            st.info("ℹ️ No check-ins recorded.")
