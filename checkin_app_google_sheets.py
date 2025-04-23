@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import os
@@ -95,53 +94,51 @@ if st.session_state.view == "attendee":
                 credentials = ""
                 email = ""
                 missing_cred = False
-        
+
                 if attendee_name:
                     attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
                     email = attendee["Email"]
                     existing_cred = attendee["Credentials"]
-        
+
                     if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
                         credentials = st.text_input("✍️ Enter your credentials")
                         missing_cred = True
                     else:
                         credentials = existing_cred
                         st.markdown(f"**Pre-registered credentials:** `{credentials}`")
-        
-                membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
 
+                membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
                 interested = ""
                 if membership_status == "No":
                     interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
-                
+
                 submitted = st.form_submit_button("✅ Check In")
 
-            
-if submitted:
-    if missing_cred and not credentials.strip():
-        st.warning("⚠️ Credentials are required for check-in.")
-    elif attendee_name:
-        name_lower = attendee_name.lower()
-        email_lower = email.lower()
-        log_names = checkin_log["Name"].astype(str).str.lower()
-        log_emails = checkin_log["Email"].astype(str).str.lower()
+            if submitted:
+                if missing_cred and not credentials.strip():
+                    st.warning("⚠️ Credentials are required for check-in.")
+                elif attendee_name:
+                    name_lower = attendee_name.lower()
+                    email_lower = email.lower()
+                    log_names = checkin_log["Name"].astype(str).str.lower()
+                    log_emails = checkin_log["Email"].astype(str).str.lower()
 
-        if name_lower in log_names.values or email_lower in log_emails.values:
-            st.warning(f"🚫 {attendee_name} has already checked in.")
-        else:
-            new_entry = pd.DataFrame([[
-                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                attendee_name,
-                email,
-                credentials,
-                "Preregistered",
-                membership_status,
-                interested if membership_status == "No" else "",
-            ]], columns=log_columns)
-            
-            checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
-            set_with_dataframe(worksheet, checkin_log)
-            st.success(f"🎉 {attendee_name} has been checked in.")
+                    if name_lower in log_names.values or email_lower in log_emails.values:
+                        st.warning(f"🚫 {attendee_name} has already checked in.")
+                    else:
+                        new_entry = pd.DataFrame([[
+                            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            attendee_name,
+                            email,
+                            credentials,
+                            "Preregistered",
+                            membership_status,
+                            interested if membership_status == "No" else "",
+                            ""
+                        ]], columns=log_columns)
+                        checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
+                        set_with_dataframe(worksheet, checkin_log)
+                        st.success(f"🎉 {attendee_name} has been checked in.")
 
     with tab2:
         st.header("📝 Manual Attendee Check-In")
@@ -149,11 +146,9 @@ if submitted:
         email_input = st.text_input("Email")
         credentials_input = st.text_input("Credentials (optional)")
         membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
-
         interested = ""
         if membership_status == "No":
             interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
-
         affiliation = st.text_input("Workplace or Affiliation")
 
         if st.button("➕ Submit Manual Check-In"):
@@ -194,21 +189,3 @@ if submitted:
     with tab4:
         st.header("🌟 Attendees Interested in PNANY Membership")
         if not checkin_log.empty:
-            interested_df = checkin_log[
-                (checkin_log["Membership Status"].str.lower() == "no") &
-                (checkin_log["Interested in Membership"].str.lower() == "yes")
-            ]
-            if not interested_df.empty:
-                st.dataframe(interested_df[["Timestamp", "Name", "Email", "Affiliation"]])
-            else:
-                st.info("No non-members have indicated interest in joining yet.")
-        else:
-            st.info("ℹ️ No check-ins recorded.")
-
-# ORGANIZER VIEW
-elif st.session_state.view == "organizer":
-    st.header("📄 Checked-In Attendees Log")
-    if not checkin_log.empty:
-        st.dataframe(checkin_log)
-    else:
-        st.info("ℹ️ No attendees have checked in yet.")
