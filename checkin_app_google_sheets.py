@@ -137,7 +137,6 @@ if submitted:
                 "Preregistered",
                 membership_status,
                 interested if membership_status == "No" else "",
-                affiliation
             ]], columns=log_columns)
             
             checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
