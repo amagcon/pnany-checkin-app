@@ -15,7 +15,14 @@ credentials_file = r"C:\Users\aubre\OneDrive\Visual Studio Code Folder\New App A
 sheet_name = "PNANY 2025 Check-In Log"
 
 # Authenticate and load Google Sheet
-gc = gspread.service_account(filename=credentials_file)
+import json
+from google.oauth2.service_account import Credentials
+
+creds_dict = st.secrets["GOOGLE_CREDENTIALS"]
+scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+credentials = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+gc = gspread.authorize(credentials)
+
 worksheet = gc.open(sheet_name).sheet1
 existing_data = worksheet.get_all_records()
 checkin_log = pd.DataFrame(existing_data)
