@@ -35,7 +35,7 @@ body {
 st.markdown(background_image, unsafe_allow_html=True)
 
 # PNANY Logo
-st.image("https://i.imgur.com/QjLFALD.png", width=180)  # Replace with actual PNANY logo link
+st.image("https://drive.google.com/uc?export=view&id=1ooPZNJ6kaDmH8tO9ld8EpserBV3gRA3t", width=180)  # Replace with actual PNANY logo link
 
 # ----------------- SHEET SETUP -----------------
 sheet_name = "PNANY 2025 Check-In Log"
@@ -99,26 +99,29 @@ if selection == "⬇️ Select Option":
 elif selection == "Attendee Check-In":
     tab1, tab2 = st.tabs(["🧾 Pre-Registered Check-In", "📝 Manual Check-In"])
 
+    
     with tab1:
         st.header("🧾 Pre-Registered Attendee Check-In")
         if registration_list.empty:
             st.warning("⚠️ Please upload a registration list to begin.")
         else:
             with st.form("pre_registered_form"):
-        attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
-        submitted = st.form_submit_button("✅ Check In")
-            if attendee_name and "submitted" in locals() and submitted:
-                attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
-                email = attendee["Email"]
-                existing_cred = attendee["Credentials"]
+                attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
+                credentials = ""
+                if attendee_name:
+                    attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
+                    email = attendee["Email"]
+                    existing_cred = attendee["Credentials"]
 
-                if pd.isna(existing_cred) or existing_cred.strip() == "":
-                    credentials = st.text_input("✍️ Enter your credentials")
-                else:
-                    credentials = existing_cred
-                    st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+                    if pd.isna(existing_cred) or existing_cred.strip() == "":
+                        credentials = st.text_input("✍️ Enter your credentials")
+                    else:
+                        credentials = existing_cred
+                        st.markdown(f"**Pre-registered credentials:** `{credentials}`")
 
-                if st.button("✅ Check In"):
+                submitted = st.form_submit_button("✅ Check In")
+
+                if submitted and attendee_name:
                     name_lower = attendee_name.lower()
                     email_lower = email.lower()
                     log_names = checkin_log["Name"].astype(str).str.lower()
