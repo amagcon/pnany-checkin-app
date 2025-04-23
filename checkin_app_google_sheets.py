@@ -131,11 +131,10 @@ if submitted:
                 credentials,
                 "Preregistered", "", "", ""
             ]], columns=log_columns)
+            
             checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
             set_with_dataframe(worksheet, checkin_log)
             st.success(f"🎉 {attendee_name} has been checked in.")
-
-                    st.success(f"🎉 {attendee_name} has been checked in.")
 
     with tab2:
         st.header("📝 Manual Attendee Check-In")
