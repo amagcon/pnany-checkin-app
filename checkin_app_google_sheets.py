@@ -35,7 +35,7 @@ body {
 st.markdown(background_image, unsafe_allow_html=True)
 
 # PNANY Logo
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png", width=180)  # Replace with actual PNANY logo link
+st.image("https://drive.google.com/file/d/1ooPZNJ6kaDmH8tO9ld8EpserBV3gRA3t/view?usp=drive_link", width=180)  # Replace with actual PNANY logo link
 
 # ----------------- SHEET SETUP -----------------
 sheet_name = "PNANY 2025 Check-In Log"
