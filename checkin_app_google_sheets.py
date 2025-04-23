@@ -100,68 +100,43 @@ if st.session_state.view == "attendee":
                     email = attendee["Email"]
                     existing_cred = attendee["Credentials"]
 
-                    if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
-                        credentials = st.text_input("✍️ Enter your credentials")
-                    else:
-                        credentials = existing_cred
-                        st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+                    
+missing_cred = False
 
-                submitted = st.form_submit_button("✅ Check In")
+if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
+    credentials = st.text_input("✍️ Enter your credentials")
+    missing_cred = True
+else:
+    credentials = existing_cred
+    st.markdown(f"**Pre-registered credentials:** `{credentials}`")
 
---
-                    missing_cred = False
-                    
-                    if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
-                        credentials = st.text_input("✍️ Enter your credentials")
-                        missing_cred = True
-                    else:
-                        credentials = existing_cred
-                        st.markdown(f"**Pre-registered credentials:** `{credentials}`")
-                    
-                    submitted = st.form_submit_button("✅ Check In")
-                    
-                    if submitted:
-                        if missing_cred and not credentials.strip():
-                            st.warning("⚠️ Credentials are required for check-in.")
-                        elif attendee_name:
-                            name_lower = attendee_name.lower()
-                            email_lower = email.lower()
-                            log_names = checkin_log["Name"].astype(str).str.lower()
-                            log_emails = checkin_log["Email"].astype(str).str.lower()
-                    
-                            if name_lower in log_names.values or email_lower in log_emails.values:
-                                st.warning(f"🚫 {attendee_name} has already checked in.")
-                            else:
-                                new_entry = pd.DataFrame([[
-                                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                                    attendee_name,
-                                    email,
-                                    credentials,
-                                    "Preregistered", "", "", ""
-                                ]], columns=log_columns)
-                                checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
-                                set_with_dataframe(worksheet, checkin_log)
-                                st.success(f"🎉 {attendee_name} has been checked in.")
-          
---
-            if submitted and attendee_name:
-                name_lower = attendee_name.lower()
-                email_lower = email.lower()
-                log_names = checkin_log["Name"].astype(str).str.lower()
-                log_emails = checkin_log["Email"].astype(str).str.lower()
+submitted = st.form_submit_button("✅ Check In")
 
-                if name_lower in log_names.values or email_lower in log_emails.values:
-                    st.warning(f"🚫 {attendee_name} has already checked in.")
-                else:
-                    new_entry = pd.DataFrame([[
-                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        attendee_name,
-                        email,
-                        credentials,
-                        "Preregistered", "", "", ""
-                    ]], columns=log_columns)
-                    checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
-                    set_with_dataframe(worksheet, checkin_log)
+
+            
+if submitted:
+    if missing_cred and not credentials.strip():
+        st.warning("⚠️ Credentials are required for check-in.")
+    elif attendee_name:
+        name_lower = attendee_name.lower()
+        email_lower = email.lower()
+        log_names = checkin_log["Name"].astype(str).str.lower()
+        log_emails = checkin_log["Email"].astype(str).str.lower()
+
+        if name_lower in log_names.values or email_lower in log_emails.values:
+            st.warning(f"🚫 {attendee_name} has already checked in.")
+        else:
+            new_entry = pd.DataFrame([[
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                attendee_name,
+                email,
+                credentials,
+                "Preregistered", "", "", ""
+            ]], columns=log_columns)
+            checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
+            set_with_dataframe(worksheet, checkin_log)
+            st.success(f"🎉 {attendee_name} has been checked in.")
+
                     st.success(f"🎉 {attendee_name} has been checked in.")
 
     with tab2:
