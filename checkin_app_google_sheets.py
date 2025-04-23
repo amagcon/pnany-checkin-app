@@ -35,7 +35,7 @@ body {
 st.markdown(background_image, unsafe_allow_html=True)
 
 # PNANY Logo
-st.image("https://drive.google.com/file/d/1ooPZNJ6kaDmH8tO9ld8EpserBV3gRA3t/view?usp=sharing", width=180)  # Replace with actual PNANY logo link
+st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1024px-React-icon.svg.png", width=180)  # Replace with actual PNANY logo link
 
 # ----------------- SHEET SETUP -----------------
 sheet_name = "PNANY 2025 Check-In Log"
@@ -62,7 +62,22 @@ else:
 
 # ----------------- LANDING PAGE -----------------
 st.markdown("<h1 style='text-align: center; color: navy;'>👋 Welcome to PNANY 2025 Spring Educational Conference</h1>", unsafe_allow_html=True)
-selection = st.radio("Who are you?", ["⬇️ Select Option", "Attendee Check-In", "Organizer View"], horizontal=True)
+
+col1, col2 = st.columns(2)
+with col1:
+    attendee_clicked = st.button("🙋 Attendee Check-In", use_container_width=True)
+with col2:
+    organizer_clicked = st.button("🛠 Organizer View", use_container_width=True)
+
+selection = None
+if attendee_clicked:
+    selection = "Attendee Check-In"
+elif organizer_clicked:
+    selection = "Organizer View"
+else:
+    st.info("Please select an option to begin.")
+    st.stop()
+
 
 if selection == "⬇️ Select Option":
     st.info("Please select an option to begin.")
