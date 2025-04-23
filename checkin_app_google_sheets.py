@@ -33,6 +33,7 @@ log_columns = [
     "Status", "Membership Status", "Interested in Membership", "Affiliation"
 ]
 for col in log_columns:
+  
     if col not in checkin_log.columns:
         checkin_log[col] = ""
 
@@ -69,49 +70,56 @@ st.markdown(
 )
 
 tab1, tab2, tab3, tab4 = st.tabs([
-    "🧾 Pre-Registered Check-In",
-    "📝 Manual Check-In",
-    "📄 View Check-In Log",
+    "🧾 Pre-Registered -In",
+    "📝 Manual -In",
+    "📄 View -In Log",
     "🌟 Interested in Membership"
 ])
 
-# Pre-Registered Check-In
+# Pre-Registered -In
 with tab1:
-    st.header("🧾 Pre-Registered Attendee Check-In")
+    st.header("🧾 Pre-Registered Attendee -In")
     if registration_list.empty:
         st.warning("⚠️ Please upload a registration list to begin.")
     else:
-        attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
-        if attendee_name:
-            attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
-            email = attendee["Email"]
-            existing_cred = attendee["Credentials"]
+        with st.form("pre_registered_form"):
+            attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
+            credentials = ""
+            email = ""
 
-            if pd.isna(existing_cred) or existing_cred.strip() == "":
-                credentials = st.text_input("✍️ Enter your credentials")
-            else:
-                credentials = existing_cred
-                st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+            if attendee_name:
+                attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
+                email = attendee["Email"]
+                existing_cred = attendee["Credentials"]
 
-            if st.button("✅ Check In"):
-                name_lower = attendee_name.lower()
-                email_lower = email.lower()
-                log_names = checkin_log["Name"].astype(str).str.lower()
-                log_emails = checkin_log["Email"].astype(str).str.lower()
-
-                if name_lower in log_names.values or email_lower in log_emails.values:
-                    st.warning(f"🚫 {attendee_name} has already checked in.")
+                if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
+                    credentials = st.text_input("✍️ Enter your credentials")
                 else:
-                    new_entry = pd.DataFrame([[
-                        datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        attendee_name,
-                        email,
-                        credentials,
-                        "Preregistered", "", "", ""
-                    ]], columns=log_columns)
-                    checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
-                    set_with_dataframe(worksheet, checkin_log)
-                    st.success(f"🎉 {attendee_name} has been checked in.")
+                    credentials = existing_cred
+                    st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+
+            submitted = st.form_submit_button("✅ Check In")
+
+        if submitted and attendee_name:
+            name_lower = attendee_name.lower()
+            email_lower = email.lower()
+            log_names = checkin_log["Name"].astype(str).str.lower()
+            log_emails = checkin_log["Email"].astype(str).str.lower()
+
+            if name_lower in log_names.values or email_lower in log_emails.values:
+                st.warning(f"🚫 {attendee_name} has already checked in.")
+            else:
+                new_entry = pd.DataFrame([[
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    attendee_name,
+                    email,
+                    credentials,
+                    "Preregistered", "", "", ""
+                ]], columns=log_columns)
+                checkin_log = pd.concat([checkin_log, new_entry], ignore_index=True)
+                set_with_dataframe(worksheet, checkin_log)
+                st.success(f"🎉 {attendee_name} has been checked in.")
+
 
 # Manual Check-In
 with tab2:
