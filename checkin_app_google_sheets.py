@@ -74,6 +74,19 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# Custom CSS to enlarge buttons
+st.markdown("""
+    <style>
+    div.stButton > button {
+        font-size: 28px !important;
+        padding: 1.2em 2em;
+        border-radius: 12px;
+        font-weight: bold;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 col1, col2 = st.columns(2)
 with col1:
     attendee_clicked = st.button("🙋 Attendee Check-In", use_container_width=True)
