@@ -270,7 +270,9 @@ elif st.session_state.view == "organizer":
         if st.button("🔓 Login"):
             if password == ORGANIZER_PASSWORD:
                 st.session_state.organizer_logged_in = True
+                st.success("✅ Login successful! Redirecting...")
                 st.experimental_rerun()
+
             else:
                 st.error("❌ Incorrect password.")
         st.stop()  # Stop here if not logged in
