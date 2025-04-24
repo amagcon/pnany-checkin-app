@@ -92,14 +92,6 @@ if st.session_state.view == "attendee":
         "📝 Manual Check-In"
     ])
 
-    registration_file = "registration_list.csv"
-    if os.path.exists(registration_file):
-        registration_list = pd.read_csv(registration_file)
-        registration_list["Name"] = registration_list["Name"].astype(str)
-        registration_list["Email"] = registration_list["Email"].astype(str)
-    else:
-        registration_list = pd.DataFrame(columns=["Name", "Email", "Credentials"])
-
     with tab1:
         st.header("🧾 Pre-Registered Attendee Check-In")
         if registration_list.empty:
