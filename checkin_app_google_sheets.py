@@ -67,25 +67,17 @@ if st.session_state.view is None:
 
 ###
 
-# Upload CSV sidebar (only show if not uploaded yet)
-st.sidebar.header("📋 Upload Registration List")
-
+# Load pre-uploaded registration list
 registration_file = "registration_list.csv"
+
 if os.path.exists(registration_file):
-    st.sidebar.success("✅ Registration list loaded.")
+    registration_list = pd.read_csv(registration_file)
+    registration_list["Name"] = registration_list["Name"].astype(str).str.strip()
+    registration_list["Email"] = registration_list["Email"].astype(str).str.strip()
+    registration_list["Credentials"] = registration_list["Credentials"].fillna("").astype(str).str.strip()
 else:
-    uploaded_file = st.sidebar.file_uploader("Upload CSV (Name, Email, Credentials)", type=["csv"])
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        required = {"Name", "Email", "Credentials"}
-        if required.issubset(df.columns):
-            df["Name"] = df["Name"].astype(str).str.strip()
-            df["Email"] = df["Email"].astype(str).str.strip()
-            df["Credentials"] = df["Credentials"].fillna("").astype(str).str.strip()
-            df.to_csv(registration_file, index=False)
-            st.sidebar.success("✅ Registration list saved. Please refresh the page.")
-        else:
-            st.sidebar.error("CSV must include: Name, Email, Credentials")
+    st.error("❌ 'registration_list.csv' not found. Please upload the file to the app directory.")
+    st.stop()
 
 
 # -------------------- ATTENDEE VIEW --------------------
