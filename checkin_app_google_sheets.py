@@ -65,6 +65,29 @@ with col2:
 if st.session_state.view is None:
     st.stop()
 
+###
+
+# Upload CSV sidebar (only show if not uploaded yet)
+st.sidebar.header("📋 Upload Registration List")
+
+registration_file = "registration_list.csv"
+if os.path.exists(registration_file):
+    st.sidebar.success("✅ Registration list loaded.")
+else:
+    uploaded_file = st.sidebar.file_uploader("Upload CSV (Name, Email, Credentials)", type=["csv"])
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        required = {"Name", "Email", "Credentials"}
+        if required.issubset(df.columns):
+            df["Name"] = df["Name"].astype(str).str.strip()
+            df["Email"] = df["Email"].astype(str).str.strip()
+            df["Credentials"] = df["Credentials"].fillna("").astype(str).str.strip()
+            df.to_csv(registration_file, index=False)
+            st.sidebar.success("✅ Registration list saved. Please refresh the page.")
+        else:
+            st.sidebar.error("CSV must include: Name, Email, Credentials")
+
+
 # -------------------- ATTENDEE VIEW --------------------
 if st.session_state.view == "attendee":
     st.markdown("<h2 style='text-align: center; color: navy;'>👋 Welcome to PNANY 2025 Spring Educational Conference</h2>", unsafe_allow_html=True)
