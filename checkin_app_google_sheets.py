@@ -8,6 +8,10 @@ from gspread_dataframe import set_with_dataframe
 import json
 from google.oauth2.service_account import Credentials
 
+
+# Organizer login password
+ORGANIZER_PASSWORD = "pnany2025"
+
 # Setup
 st.set_page_config(page_title='Event Check-In', layout='centered')
 sheet_name = 'PNANY 2025 Check-In Log'
@@ -38,9 +42,13 @@ st.markdown(background_image, unsafe_allow_html=True)
 # PNANY Logo
 st.image("https://i.imgur.com/QjLFALD.png", width=180)
 
-# Landing Page Navigation
+## Landing Page Navigation
 if "view" not in st.session_state:
     st.session_state.view = None
+###NEW CODE for PW
+if "organizer_logged_in" not in st.session_state:
+    st.session_state.organizer_logged_in = False
+#
 
 st.markdown("""
     <style>
@@ -58,9 +66,17 @@ col1, col2 = st.columns(2)
 with col1:
     if st.button("🙋 Attendee Check-In"):
         st.session_state.view = "attendee"
+##
+
 with col2:
     if st.button("🛠 Organizer View"):
         st.session_state.view = "organizer"
+        st.session_state.organizer_logged_in = False  # Reset login state each time it's clicked
+
+# with col2:
+#     if st.button("🛠 Organizer View"):
+#         st.session_state.view = "organizer"
+#
 
 if st.session_state.view is None:
     st.stop()
@@ -240,10 +256,31 @@ if st.session_state.view == "attendee":
                     st.success(f"✅ {name_input} has been manually checked in.")
 
 # -------------------- ORGANIZER VIEW --------------------
+# elif st.session_state.view == "organizer":
+#     st.markdown("<h2 style='text-align: center; color: navy;'>🛠 Organizer View</h2>", unsafe_allow_html=True)
+#     tab3, tab4 = st.tabs(["📄 View Check-In Log", "🌟 Interested in Membership"])
+
+##
+
 elif st.session_state.view == "organizer":
+    # If not logged in, show password prompt
+    if not st.session_state.organizer_logged_in:
+        st.markdown("<h2 style='text-align: center; color: navy;'>🔐 Organizer Login</h2>", unsafe_allow_html=True)
+        password = st.text_input("Enter organizer password", type="password")
+        if st.button("🔓 Login"):
+            if password == ORGANIZER_PASSWORD:
+                st.session_state.organizer_logged_in = True
+                st.experimental_rerun()
+            else:
+                st.error("❌ Incorrect password.")
+        st.stop()  # Stop here if not logged in
+
+    # Once logged in, show full Organizer View
     st.markdown("<h2 style='text-align: center; color: navy;'>🛠 Organizer View</h2>", unsafe_allow_html=True)
     tab3, tab4 = st.tabs(["📄 View Check-In Log", "🌟 Interested in Membership"])
-
+    
+##    
+    
     with tab3:
         st.header("📄 Checked-In Attendees Log")
         total_checked_in = len(checkin_log)
