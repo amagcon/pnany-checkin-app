@@ -262,21 +262,38 @@ if st.session_state.view == "attendee":
 
 ##
 
+# elif st.session_state.view == "organizer":     # If not logged in, show password prompt
+#     if not st.session_state.organizer_logged_in:
+#         st.markdown("<h2 style='text-align: center; color: navy;'>🔐 Organizer Login</h2>", unsafe_allow_html=True)
+#         password = st.text_input("Enter organizer password", type="password")
+#         if st.button("🔓 Login"):
+#             if password == ORGANIZER_PASSWORD:
+#                 st.session_state.organizer_logged_in = True
+#                 st.success("✅ Login successful! Redirecting...")
+#                 st.experimental_rerun()
+
+#             else:
+#                 st.error("❌ Incorrect password.")
+#         st.stop()  # Stop here if not logged in
+###
+
 elif st.session_state.view == "organizer":
-    # If not logged in, show password prompt
     if not st.session_state.organizer_logged_in:
         st.markdown("<h2 style='text-align: center; color: navy;'>🔐 Organizer Login</h2>", unsafe_allow_html=True)
         password = st.text_input("Enter organizer password", type="password")
-        if st.button("🔓 Login"):
-            if password == ORGANIZER_PASSWORD:
-                st.session_state.organizer_logged_in = True
-                st.success("✅ Login successful! Redirecting...")
-                st.experimental_rerun()
+        login_attempt = st.button("🔓 Login")
 
+        if login_attempt:
+            if password == ORGANIZER_PASSWORD:
+                st.success("✅ Login successful! Redirecting...")
+                st.session_state.organizer_logged_in = True
+                st.experimental_rerun()  # Only rerun right after setting the flag
             else:
                 st.error("❌ Incorrect password.")
-        st.stop()  # Stop here if not logged in
 
+        st.stop()  # Prevent going further if not logged in
+    
+##    
     # Once logged in, show full Organizer View
     st.markdown("<h2 style='text-align: center; color: navy;'>🛠 Organizer View</h2>", unsafe_allow_html=True)
     tab3, tab4 = st.tabs(["📄 View Check-In Log", "🌟 Interested in Membership"])
