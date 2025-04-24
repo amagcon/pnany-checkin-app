@@ -75,9 +75,12 @@ if os.path.exists(registration_file):
     registration_list["Name"] = registration_list["Name"].astype(str).str.strip()
     registration_list["Email"] = registration_list["Email"].astype(str).str.strip()
     registration_list["Credentials"] = registration_list["Credentials"].fillna("").astype(str).str.strip()
+    if "Membership Note" not in registration_list.columns:
+        registration_list["Membership Note"] = ""
 else:
     st.error("❌ 'registration_list.csv' not found. Please upload the file to the app directory.")
     st.stop()
+
 
 
 # -------------------- ATTENDEE VIEW --------------------
@@ -125,6 +128,24 @@ if st.session_state.view == "attendee":
                 if membership_status == "No":
                     interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
 
+                # Show Membership Note if available
+                note = attendee.get("Membership Note", "")
+                if isinstance(note, str) and note.strip() != "":
+                    st.markdown(f"""
+                        <div style='
+                            background-color:#fff3cd;
+                            padding:10px 15px;
+                            margin-top:15px;
+                            border-left:6px solid #ffc107;
+                            border-radius:4px;
+                            font-weight:bold;
+                            font-size:16px;
+                        '>
+                        📢 {note}
+                        </div>
+                    """, unsafe_allow_html=True)
+                ###
+                
                 submitted = st.form_submit_button("✅ Check In")
 
             if submitted:
