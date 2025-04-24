@@ -97,32 +97,75 @@ if st.session_state.view == "attendee":
         if registration_list.empty:
             st.warning("⚠️ Please upload a registration list to begin.")
         else:
+            # with st.form("pre_registered_form"):
+            #     attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
+            #     credentials = ""
+            #     email = ""
+            #     missing_cred = False
+
+            #     if attendee_name:
+            #         attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
+            #         email = attendee["Email"]
+            #         existing_cred = attendee["Credentials"]
+
+            #         if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
+            #             credentials = st.text_input("✍️ Enter your credentials")
+            #             missing_cred = True
+            #         else:
+            #             credentials = existing_cred
+            #             st.markdown(f"**Pre-registered credentials:** `{credentials}`")
+
+            #     membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
+            #     interested = ""
+            #     if membership_status == "No":
+            #         interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
+
+            #     # Show Membership Note if available
+            #     note = attendee.get("Membership Note", "")
+            #     if isinstance(note, str) and note.strip() != "":
+            #         st.markdown(f"""
+            #             <div style='
+            #                 background-color:#fff3cd;
+            #                 padding:10px 15px;
+            #                 margin-top:15px;
+            #                 border-left:6px solid #ffc107;
+            #                 border-radius:4px;
+            #                 font-weight:bold;
+            #                 font-size:16px;
+            #             '>
+            #             📢 {note}
+            #             </div>
+            #         """, unsafe_allow_html=True)
+            #     ###
+                
+            #     submitted = st.form_submit_button("✅ Check In")
+
             with st.form("pre_registered_form"):
                 attendee_name = st.selectbox("Select your name", options=[""] + sorted(registration_list["Name"].unique()))
                 credentials = ""
                 email = ""
                 missing_cred = False
-
+                note = ""
+                
                 if attendee_name:
                     attendee = registration_list[registration_list["Name"] == attendee_name].iloc[0]
                     email = attendee["Email"]
                     existing_cred = attendee["Credentials"]
-
+                    note = attendee.get("Membership Note", "")
+            
                     if not isinstance(existing_cred, str) or existing_cred.strip().lower() in ["", "nan", "none"]:
                         credentials = st.text_input("✍️ Enter your credentials")
                         missing_cred = True
                     else:
                         credentials = existing_cred
                         st.markdown(f"**Pre-registered credentials:** `{credentials}`")
-
+            
                 membership_status = st.radio("Are you a PNANY member?", ["Yes", "No"], horizontal=True)
                 interested = ""
                 if membership_status == "No":
                     interested = st.radio("Would you like to become a member?", ["Yes", "No"], horizontal=True)
-
-                # Show Membership Note if available
-                note = attendee.get("Membership Note", "")
-                if isinstance(note, str) and note.strip() != "":
+            
+                if note.strip():
                     st.markdown(f"""
                         <div style='
                             background-color:#fff3cd;
@@ -136,10 +179,11 @@ if st.session_state.view == "attendee":
                         📢 {note}
                         </div>
                     """, unsafe_allow_html=True)
-                ###
-                
+            
                 submitted = st.form_submit_button("✅ Check In")
 
+            
+            
             if submitted:
                 if missing_cred and not credentials.strip():
                     st.warning("⚠️ Credentials are required for check-in.")
